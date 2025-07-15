@@ -9,17 +9,17 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="startScreen" id="startScreen">
+  <div class="startScreen hide" id="startScreen">
     <button class="startBtn" id="startBtn">Khel Shuru</button>
   </div>
-  <div class="wrapper" style="display: none;">
+  <div class="wrapper hide" >
     <div class="headline">AIM MAHARAJA 🇮🇳</div>
     <div class="timer">⏱️ <span id="timer">60</span>s</div>
     <div class="score">Score: <span id="score">0</span></div>
     <div class="highscore">🏆 High Score: <span id="highscore">0</span></div>
     <div class="game-area" id="gameArea"></div>
   </div>
-  <div class="resultBox hide" id="resultBox">
+  <div class="resultBox" id="resultBox">
       <div class="upperSection">
         <h1 class="headline" id="resultMsg">Khel Samapt!</h1>
       <div class="resultBoxRow">
@@ -31,8 +31,8 @@
         <h1><span class="finalHigh"></span></h1>
       </div>
         </div>
-      <div class="newGame">
-        <button class="newGameBtn" id="newGameBtn">Start <span>New</span> Game</button>
+      <div class="newGame resultBtnDiv">
+        <button class="newGameBtn" id="newGameBtn">Start <span>New</span> Game</button><br>
         <a href="../index.html" class="back-menu-btn" style="color: rgb(4, 177, 4);">⬅️ Play <span>other</span> Games</a>
       </div>
   </div>

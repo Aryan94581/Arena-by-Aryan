@@ -131,6 +131,7 @@ body {
     60% { opacity: 0.9;}
     100% { opacity: 0; transform: scale(2.1);}
   }
+  
   .resultBox{
     height: 400px;
     width: 400px;
@@ -144,7 +145,7 @@ body {
 }
 .upperSection{
     height: 60%;
-    width: 100%;
+    width: 90%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,19 +153,18 @@ body {
     gap: 20px;
 }
 .upperSection .headline{
-    font-size: 2.5rem;
     color: #ff8000;
+    font-size: 2.5rem;
 }
 .resultBoxRow{
     width: 100%;
-    height: 35%;
+    height: 30%;
     display: flex;
     align-items:end;
     justify-content: space-between;
     flex-direction: row;
     padding: 2px 15px;
     color: #ff8000;
-
     background:#fff;
     border-radius: 7px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
@@ -179,8 +179,8 @@ body {
      margin-right: 50px ;
 }
 .resultBox button{
-    height: 70px;
-    width: 90%;
+    height: 50px;
+    width: 70%;
     border-radius: 10px;
     margin : 10px 20px;
     font-weight: 800;
@@ -189,7 +189,15 @@ body {
     background-color: #ff8000;
     border: 0px;
     cursor: pointer;
-    /* box-shadow: 0 3px 10px rgba(0,0,0,0.1); */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.resultBtnDiv{
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
 }
 .newGame span{
     color: #5cbcf8 ;
@@ -197,16 +205,9 @@ body {
 
 .hide{display: none;}
 
-/* @media (max-width: 600px) {
-.wrapper {
-    max-width: 99vw;
-    max-height: 96vh;
-    min-width: unset; min-height: unset;
-}
-.headline { font-size: 2rem; }
-} */
+
 @media (max-width: 700px), (max-height: 750px) {
-  .wrapper, .resultBox {
+  .wrapper{
     width: 98vw;
     min-width: unset;
     max-width: 99vw;
@@ -219,14 +220,15 @@ body {
   .game-area {
     border-radius: 6vw;
     min-height: 50vw;
+    margin-bottom: 50px;
   }
   .headline {
-    font-size: 6vw;
-    margin-top: 3vw;
-    margin-bottom: 2vw;
+    height: 5%;
+    font-size: 2rem;
   }
+
   .timer, .score, .highscore {
-    font-size: 4.3vw;
+    font-size: 1rem;
     margin-bottom: 1vw;
   }
   .startBtn {
