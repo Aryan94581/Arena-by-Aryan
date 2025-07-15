@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Direction</title>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" 
+      rel="stylesheet">
+      <link rel="stylesheet" href="../Main.css">
+      <link href="./style.css" rel="stylesheet" >
+</head>
+<body>
+    <div class="wrapper">
+        <div class="gameArea">
+            <p id="gameText">Swipe or Use Arrows</p>
+            <div class="arrow hide"></div>
+        </div>
+    </div>
+    <div class="btn">
+    <div id="info">Click "Start" to play</div>
+    <button class="startBtn">Start</button>
+        </div>
+    <div class="resultBox hide">
+        <div class="upperSection">
+            <h1 class="headline">Game Over!</h1>
+            <div class="resultBoxRow">
+                <h1> Time Taken</h1>
+                <h1 ><span class="time"></span>s</h1>
+            </div>
+            <div class="resultBoxRow">
+                <h1>Level reached</h1>
+                <h1 class="levels"></h1>
+            </div>
+        </div>
+        <div class="newGame"> <button>Start <span>New</span> Game</button>
+        <a href="../index.html" class="back-menu-btn" style="color: rgb(4, 177, 4);">⬅️ Play <span>other</span> Games</a></div>
+    </div>
+</body>
+<script src="./index.js"></script>
+</html>

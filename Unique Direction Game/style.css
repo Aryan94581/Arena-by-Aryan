@@ -1,0 +1,260 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'poppins', sans-serif ;
+}
+
+body.noscroll, html.noscroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed; /* Prevents scrolling on mobile */
+  width: 100vw;
+  overscroll-behavior: contain;
+  touch-action: none; /* Optional: disables double-tap to zoom etc. */
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #ff8000;
+  overscroll-behavior-y: none;
+}
+.wrapper {
+  height: 60%;
+  width: 93%;
+  background: #f8f8f8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#info{
+    font-size: 1.5rem;
+  }
+  #gameText{
+    font-size: 1.2rem;
+  }
+.gameArea {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button {
+  padding: 10px 20px;
+  font-size: 2rem;
+  cursor: pointer;
+  background: #f8f8f8;
+  border-radius: 10px;
+  border: none;
+}
+.btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Result box */
+.resultBox{
+    height: 400px;
+    width: 400px;
+    padding: 25px;
+    background: #f8f8f8;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+}
+.upperSection{
+    height: 60%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+.upperSection .headline{
+    font-size: 2.5rem;
+    color: #ff8000;
+}
+.resultBoxRow{
+    width: 100%;
+    height: 35%;
+    display: flex;
+    align-items:end;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: 2px 15px;
+    color: #ff8000;
+
+    background:#fff;
+    border-radius: 7px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+
+}
+.time{
+    color: #5cbcf8;
+
+}
+.mistakes{
+    color: #5cbcf8;
+     margin-right: 50px ;
+}
+.resultBox button{
+    height: 70px;
+    width: 90%;
+    border-radius: 10px;
+    margin : 10px 20px;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: #ff8000;
+    border: 0px;
+    cursor: pointer;
+    /* box-shadow: 0 3px 10px rgba(0,0,0,0.1); */
+}
+.newGame span{
+    color: #5cbcf8 ;
+}
+
+.hide{
+  display: none;
+}
+/* Animation Direction */
+.arrow {
+  position: absolute;
+  color: white;
+  background-color: #ff8000;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1; /* NOT infinite */
+  animation-fill-mode: both;
+}
+.arrow.green {
+  /*  because we are updating in same class. */
+  background-color: green;
+}
+.arrow.hide {
+  display: none;
+}
+
+.right {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  animation-name: moveRight;
+}
+
+.left {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  animation-name: moveLeft;
+}
+
+.up {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-name: moveUp;
+}
+
+.down {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-name: moveDown;
+}
+
+@keyframes moveRight {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes moveLeft {
+  0% {
+    right: 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    right: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes moveUp {
+  0% {
+    bottom: 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    bottom: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes moveDown {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+/* Animation over  */
+
+@media (min-width: 700px) {
+  .wrapper{
+    height: 600px;
+    width: 650px;
+  }
+  .gameArea{
+    height: 300px;
+    width: 300px;
+  }
+  button{
+  padding: 10px 25px;
+  font-size: 2rem;
+  }
+  #gameText{
+    font-size: 1.5rem;
+  }
+  .arrow{
+    height: 80px;
+    width: 80px;
+    animation-duration: 1s;
+  }
+}
