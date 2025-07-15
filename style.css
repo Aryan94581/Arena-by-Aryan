@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;400&display=swap');
+
+body {
+  background: #ff8000;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.main-container {
+  max-width: 470px;
+  padding: 38px 22px 22px 22px;
+  background: #f8f8f8;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.11);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+h1 {
+  color: #ff8000;
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  letter-spacing: 1.2px;
+  text-align: center;
+}
+
+.subtitle {
+  color: #5cbcf8;
+  margin-bottom: 26px;
+  font-weight: 500;
+  font-size: 1.09rem;
+  text-align: center;
+}
+
+.games-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px 16px 10px;
+  background: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #444;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: box-shadow 0.19s, background 0.15s, border-color 0.15s, transform 0.13s;
+  border: 2px solid transparent;
+  min-height: 130px;
+  position: relative;
+  overflow: hidden;
+}
+.game-card div {
+  font-size: 2rem;
+  margin-bottom: 7px;
+}
+.game-card h2 {
+  margin: 6px 0 4px 0;
+  font-size: 1.17rem;
+  font-weight: 700;
+  text-align: center;
+  color: #ff8000;
+  letter-spacing: 0.1px;
+}
+.game-card p {
+  margin: 0;
+  font-size: 0.98rem;
+  color: #5cbcf8;
+  text-align: center;
+}
+.game-card::after {
+  content: '';
+  position: absolute;
+  left: -10%;
+  top: -10%;
+  width: 130%;
+  height: 100%;
+  background: radial-gradient(circle, #ff800016 35%, transparent 70%);
+  pointer-events: none;
+  transition: opacity 0.18s;
+  opacity: 0;
+}
+.game-card:hover, .game-card:focus {
+  background: #fff7ef;
+  box-shadow: 0 6px 24px #ff800033, 0 2px 12px #5cbcf81a;
+  border-color: #ff8000;
+  color: #ff8000;
+  transform: translateY(-2.5px) scale(1.022);
+}
+.game-card:hover::after, .game-card:focus::after {
+  opacity: 1;
+}
+footer {
+  font-size: 1rem;
+  color: #b9b9b9;
+  margin-top: 16px;
+  letter-spacing: 0.4px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .main-container { margin: 7vw auto 0 auto; padding: 12vw 2vw 7vw 2vw;}
+  .games-list { grid-template-columns: 1fr; }
+  h1 { font-size: 2rem; }
+}
