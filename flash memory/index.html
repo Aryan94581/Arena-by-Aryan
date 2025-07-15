@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Memory Flash Grid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Main.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div id="memoryGrid"></div>
+  </div>
+  <div class="resultBox hide">
+    <div class="upperSection">
+      <h1 class="headline">Game Over!</h1>
+      <div class="resultBoxRow">
+        <h1>Time Taken</h1>
+        <h1><span class="time"></span>s</h1>
+      </div>
+      <div class="resultBoxRow">
+        <h1>Level reached</h1>
+        <h1 class="level"></h1>
+      </div>
+    </div>
+    <div class="newGame">
+      <button>Start <span>New</span> Game</button>
+      <a href="../index.html" class="back-menu-btn" style="color: rgb(4, 177, 4);">⬅️ Play <span>other</span> Games</a>
+    </div>
+  </div>
+  <div class="startScreen">
+    <button id="startBtn">Start Game</button>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>
