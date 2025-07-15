@@ -150,11 +150,11 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 }
 .upperSection .headline{
     color: #ff8000;
-    font-size: 2.5rem;
+    font-size: 2rem;
 }
 .resultBoxRow{
     width: 100%;
@@ -168,7 +168,9 @@ body {
     background:#fff;
     border-radius: 7px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-
+}
+.resultBoxRow h2{
+  margin: 5px;
 }
 .time{
     color: #5cbcf8;
@@ -223,7 +225,7 @@ body {
     margin-bottom: 50px;
   }
   .headline {
-    height: 5%;
+    /* height: 5%; */
     font-size: 2rem;
   }
 
@@ -255,5 +257,55 @@ body {
   }
   .back-menu-btn {
     font-size: 4vw;
+  }
+}
+@media (max-width: 1100px) and (max-height: 700px) {
+  .wrapper{
+    width: 98vw;
+    min-width: unset;
+    max-width: 99vw;
+    height: 98vh;
+    min-height: unset;
+    max-height: 99vh;
+    padding: 18px 2vw 10px 2vw;
+    border-radius: 22px;
+  }
+  .game-area {
+    border-radius: 20px;
+    min-height: 350px;
+    max-height: 75vh;
+  }
+  .headline {
+    font-size: 2.7rem;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  .timer, .score, .highscore {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  .startBtn {
+    font-size: 2.3rem;
+    padding: 20px 80px;
+    border-radius: 18px;
+  }
+  .target {
+    min-width: 45px;
+    min-height: 45px;
+  }
+  .resultBox button {
+    height: 60px;
+    width: 90%;
+    font-size: 2.1rem;
+    margin: 12px auto;
+    border-radius: 18px;
+  }
+  .resultBoxRow {
+    font-size: 1.8rem;
+    padding: 0 30px;
+    min-height: 40px;
+  }
+  .back-menu-btn {
+    font-size: 1.5rem;
   }
 }
