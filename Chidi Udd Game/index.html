@@ -4,7 +4,82 @@
   <meta charset="UTF-8">
   <title>Chidi Udd Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      overscroll-behavior: contain;
+      user-select: none;
+    }
+    body {
+      background: #f7faec;
+      font-family: 'Mukti Narrow', Arial, sans-serif;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #game-container {
+      background: #fff9e5;
+      border: 2.5px solid #ffd180;
+      border-radius: 16px;
+      box-shadow: 0 3px 16px #ffaa0055;
+      padding: 30px 30px 25px 30px;
+      text-align: center;
+      width: 95vw;
+      max-width: 400px;
+      min-width: 260px;
+      min-height: 350px;
+    }
+    #start-btn,
+    #restart-btn {
+      background: #ff8000;
+      color: #fff;
+      border: none;
+      padding: 12px 36px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+      margin: 26px 0 10px 0;
+      letter-spacing: 1px;
+      display: inline-block;
+    }
+    #start-btn:active,
+    #restart-btn:active {
+      background: #e05c00;
+    }
+    #main-game {
+      display: none;
+    }
+    #word-box {
+      font-size: 2rem;
+      color: #ff8000;
+      margin: 32px 0 18px 0;
+      min-height: 48px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      user-select: none;
+    }
+    #score-board {
+      margin: 16px 0 0 0;
+      font-size: 1.14rem;
+      color: #444;
+    }
+    #game-over {
+      font-size: 1.35rem;
+      color: #e80000;
+      margin-top: 20px;
+      font-weight: 600;
+      display: none;
+    }
+    #restart-btn {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <div id="game-container">
@@ -12,13 +87,177 @@
     <div id="start-screen">
       <button id="start-btn">खेल शुरू करें</button>
     </div>
-    <div id="main-game" class="hidden">
+    <div id="main-game">
       <div id="word-box"></div>
       <div id="score-board">स्कोर: <span id="score">0</span></div>
-      <div id="game-over" class="hidden">खेल समाप्त!</div>
-      <button id="restart-btn" class="hidden">नया खेल शुरू करें</button>
+      <div id="game-over">खेल समाप्त!</div>
+      <button id="restart-btn">नया खेल शुरू करें</button>
     </div>
   </div>
-  <script src="main.js"></script>
+  <script>
+    // Disable all scrolling/dragging on mobile/desktop
+    window.addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
+    window.addEventListener('scroll', function(e){ window.scrollTo(0,0); });
+    document.body.addEventListener('dragstart', e => e.preventDefault());
+    document.body.addEventListener('drop', e => e.preventDefault());
+
+    const flyingThings = [
+      "चिड़िया", "कौआ", "तोता", "मक्खी", "मच्छर", "पतंग", "तितली", "बाज़", "गिद्ध"
+    ];
+    const notFlyingThings = [
+      "कुत्ता", "बिल्ली", "घोड़ा", "गाय", "भालू", "छिपकली", "बकरी", "गधा", "शेर"
+    ];
+    let mixedArray = [];
+    let current = 0;
+    let score = 0;
+    let playing = false;
+
+    const wordBox = document.getElementById('word-box');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const scoreSpan = document.getElementById('score');
+    const gameOverDiv = document.getElementById('game-over');
+    const startScreen = document.getElementById('start-screen');
+    const mainGame = document.getElementById('main-game');
+
+    function getMixedArray(level) {
+      let arr = [];
+      for (let i = 0; i < level; i++) {
+        const isFly = Math.random() < 0.5;
+        if (isFly) {
+          arr.push({
+            word: flyingThings[Math.floor(Math.random() * flyingThings.length)],
+            isFlying: true
+          });
+        } else {
+          arr.push({
+            word: notFlyingThings[Math.floor(Math.random() * notFlyingThings.length)],
+            isFlying: false
+          });
+        }
+      }
+      return arr;
+    }
+
+    function startGame() {
+      playing = true;
+      current = 0;
+      score = 0;
+      scoreSpan.innerText = score;
+      gameOverDiv.style.display = "none";
+      restartBtn.style.display = "none";
+      startScreen.style.display = "none";
+      mainGame.style.display = "block";
+      nextLevel(1);
+    }
+
+    function nextLevel(level) {
+      mixedArray = getMixedArray(level);
+      showWord(0);
+    }
+
+    function showWord(i) {
+      if (i >= mixedArray.length) {
+        setTimeout(() => {
+          nextLevel(mixedArray.length + 1);
+        }, 700);
+        return;
+      }
+      wordBox.innerText = mixedArray[i].word;
+      current = i;
+      playing = true;
+
+      let startY = null;
+      let startX = null;
+      let moved = false;
+
+      function onTouchStart(e) {
+        startY = e.touches ? e.touches[0].clientY : e.clientY;
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
+        moved = false;
+      }
+      function onTouchMove(e) {
+        if (!playing) return;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const deltaY = startY - y;
+        const deltaX = startX - x;
+        // Swipe up = flying
+        if (deltaY > 40 && Math.abs(deltaX) < 25) {
+          moved = true;
+          handleInput("swipeUp");
+        }
+        // Swipe down = non-flying
+        else if (deltaY < -40 && Math.abs(deltaX) < 25) {
+          moved = true;
+          handleInput("swipeDown");
+        }
+        // Swipe left/right or weird
+        else if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 15) {
+          moved = true;
+          handleInput("wrongmove");
+        }
+      }
+      function onTouchEnd(e) {
+        if (!moved) handleInput("noAction");
+      }
+
+      function onKeyDown(e) {
+        if (!playing) return;
+        if (e.key === "ArrowUp") {
+          handleInput("arrowUp");
+        }
+        else if (e.key === "ArrowDown") {
+          handleInput("arrowDown");
+        }
+        else if (e.key.startsWith("Arrow")) {
+          handleInput("wrongmove");
+        }
+      }
+
+      wordBox.addEventListener('touchstart', onTouchStart);
+      wordBox.addEventListener('mousedown', onTouchStart);
+      wordBox.addEventListener('touchmove', onTouchMove);
+      wordBox.addEventListener('mousemove', onTouchMove);
+      wordBox.addEventListener('touchend', onTouchEnd);
+      wordBox.addEventListener('mouseup', onTouchEnd);
+      window.addEventListener('keydown', onKeyDown);
+      document.addEventListener('keydown', onKeyDown);
+
+      function handleInput(action) {
+        playing = false;
+        wordBox.removeEventListener('touchstart', onTouchStart);
+        wordBox.removeEventListener('mousedown', onTouchStart);
+        wordBox.removeEventListener('touchmove', onTouchMove);
+        wordBox.removeEventListener('mousemove', onTouchMove);
+        wordBox.removeEventListener('touchend', onTouchEnd);
+        wordBox.removeEventListener('mouseup', onTouchEnd);
+        window.removeEventListener('keydown', onKeyDown);
+        document.removeEventListener('keydown', onKeyDown);
+
+        const ans = mixedArray[current];
+        let correct = false;
+        // Flying things: only Arrow Up/swap up is correct
+        if (ans.isFlying && (action === "arrowUp" || action === "swipeUp")) correct = true;
+        // Non-flying things: only Arrow Down/swap down is correct
+        if (!ans.isFlying && (action === "arrowDown" || action === "swipeDown")) correct = true;
+        // For non-flying things: if user does nothing (does not move/switch) that's also OK
+        if (!ans.isFlying && action === "noAction") correct = true;
+
+        if (correct) {
+          score++;
+          scoreSpan.innerText = score;
+          setTimeout(() => showWord(current + 1), 400);
+        } else {
+          gameOverDiv.style.display = "block";
+          restartBtn.style.display = "inline-block";
+          wordBox.innerText = '';
+        }
+      }
+    }
+
+    startBtn.onclick = startGame;
+    restartBtn.onclick = startGame;
+  </script>
 </body>
 </html>
