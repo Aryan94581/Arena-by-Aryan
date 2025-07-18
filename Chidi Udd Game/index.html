@@ -9,11 +9,16 @@
 <body>
   <div id="game-container">
     <h2>चिड़ी उड़!</h2>
-    <div id="word-box"></div>
-    <button id="start-btn">खेल शुरू करें</button>
-    <div id="score-board">स्कोर: <span id="score">0</span></div>
-    <div id="game-over" class="hidden">खेल समाप्त!</div>
+    <div id="start-screen">
+      <button id="start-btn">खेल शुरू करें</button>
+    </div>
+    <div id="main-game" class="hidden">
+      <div id="word-box"></div>
+      <div id="score-board">स्कोर: <span id="score">0</span></div>
+      <div id="game-over" class="hidden">खेल समाप्त!</div>
+      <button id="restart-btn" class="hidden">नया खेल शुरू करें</button>
+    </div>
   </div>
-  <script src="index.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

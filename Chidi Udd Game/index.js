@@ -9,17 +9,26 @@ let mixedArray = [];
 let current = 0;
 let score = 0;
 let playing = false;
-let timer = null;
 
 const wordBox = document.getElementById('word-box');
 const startBtn = document.getElementById('start-btn');
+const restartBtn = document.getElementById('restart-btn');
 const scoreSpan = document.getElementById('score');
 const gameOverDiv = document.getElementById('game-over');
+const startScreen = document.getElementById('start-screen');
+const mainGame = document.getElementById('main-game');
+
+// Disable all scrolling & dragging on mobile/desktop
+window.addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
+window.addEventListener('scroll', function(e){ window.scrollTo(0,0); });
+document.body.addEventListener('dragstart', e => e.preventDefault());
+document.body.addEventListener('drop', e => e.preventDefault());
+
+// ---- Main Game Logic ----
 
 function getMixedArray(level) {
   let arr = [];
   for (let i = 0; i < level; i++) {
-    // Randomly pick flying or non-flying
     const isFly = Math.random() < 0.5;
     if (isFly) {
       arr.push({
@@ -42,7 +51,9 @@ function startGame() {
   score = 0;
   scoreSpan.innerText = score;
   gameOverDiv.classList.add('hidden');
-  startBtn.style.display = 'none';
+  restartBtn.classList.add('hidden');
+  startScreen.classList.add('hidden');
+  mainGame.classList.remove('hidden');
   nextLevel(1);
 }
 
@@ -53,78 +64,97 @@ function nextLevel(level) {
 
 function showWord(i) {
   if (i >= mixedArray.length) {
-    // Next level
     setTimeout(() => {
       nextLevel(mixedArray.length + 1);
-    }, 600);
+    }, 700);
     return;
   }
   wordBox.innerText = mixedArray[i].word;
   current = i;
+  playing = true;
 
-  // Add swipe up detection
   let startY = null;
+  let startX = null;
   let moved = false;
 
   function onTouchStart(e) {
     startY = e.touches ? e.touches[0].clientY : e.clientY;
+    startX = e.touches ? e.touches[0].clientX : e.clientX;
     moved = false;
   }
   function onTouchMove(e) {
     if (!playing) return;
     const y = e.touches ? e.touches[0].clientY : e.clientY;
-    if (startY - y > 40) { // swiped up
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const deltaY = startY - y;
+    const deltaX = startX - x;
+    if (Math.abs(deltaY) > 40 && Math.abs(deltaX) < 25) {
+      // Up or down swipe
       moved = true;
       handleInput(true);
-    } else if (Math.abs(startY - y) > 15) { // moved but not up enough
+    } else if (Math.abs(deltaX) > 30) {
+      // Left/right swipe = wrong!
+      moved = true;
+      handleInput('wrongmove');
+    } else if (Math.abs(deltaY) > 15) {
       moved = true;
       handleInput('wrongmove');
     }
   }
   function onTouchEnd(e) {
-    if (!moved) handleInput(false); // didn't move finger
+    if (!moved) handleInput(false);
   }
 
-  function handleInput(swipedUp) {
+  // Keyboard Arrow Up/Down
+  function onKeyDown(e) {
+    if (!playing) return;
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      handleInput(true);
+    } else if (e.key.startsWith("Arrow")) {
+      handleInput('wrongmove');
+    }
+  }
+
+  function handleInput(swipedUpOrDown) {
     playing = false;
-    // Remove listeners to prevent multiple triggers
     wordBox.removeEventListener('touchstart', onTouchStart);
     wordBox.removeEventListener('mousedown', onTouchStart);
     wordBox.removeEventListener('touchmove', onTouchMove);
     wordBox.removeEventListener('mousemove', onTouchMove);
     wordBox.removeEventListener('touchend', onTouchEnd);
     wordBox.removeEventListener('mouseup', onTouchEnd);
+    document.removeEventListener('keydown', onKeyDown);
 
     const ans = mixedArray[current];
-    if (swipedUp === true && ans.isFlying) {
-      // Correct
+    if (swipedUpOrDown === true && ans.isFlying) {
       score++;
       scoreSpan.innerText = score;
-      playing = true;
       setTimeout(() => showWord(current + 1), 400);
-    } else if (swipedUp === false && !ans.isFlying) {
-      // Correct (didn’t move finger)
+    } else if (swipedUpOrDown === false && !ans.isFlying) {
       score++;
       scoreSpan.innerText = score;
-      playing = true;
       setTimeout(() => showWord(current + 1), 400);
     } else {
-      // Wrong!
       gameOverDiv.classList.remove('hidden');
-      startBtn.innerText = "नया खेल शुरू करें";
-      startBtn.style.display = '';
+      restartBtn.classList.remove('hidden');
+      mainGame.classList.remove('shake');
       wordBox.innerText = '';
     }
   }
 
-  // Mobile
+  // Mouse/Touch listeners
   wordBox.addEventListener('touchstart', onTouchStart);
-  wordBox.addEventListener('touchmove', onTouchMove);
-  wordBox.addEventListener('touchend', onTouchEnd);
-  // Desktop
   wordBox.addEventListener('mousedown', onTouchStart);
+  wordBox.addEventListener('touchmove', onTouchMove);
   wordBox.addEventListener('mousemove', onTouchMove);
+  wordBox.addEventListener('touchend', onTouchEnd);
   wordBox.addEventListener('mouseup', onTouchEnd);
+
+  // Keyboard
+  document.addEventListener('keydown', onKeyDown);
 }
 
 startBtn.onclick = startGame;
+restartBtn.onclick = function() {
+  startGame();
+};
