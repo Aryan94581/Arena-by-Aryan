@@ -93,9 +93,12 @@
       <div id="game-over">खेल समाप्त!</div>
       <button id="restart-btn">नया खेल शुरू करें</button>
     </div>
+    <!-- Success & Error Sounds -->
+    <audio id="right-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9a4f6f.mp3"></audio>
+    <audio id="wrong-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_116b9a4f7f.mp3"></audio>
   </div>
   <script>
-    // Disable all scrolling/dragging on mobile/desktop
+    // Prevent all scroll/drag on mobile/desktop
     window.addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
     window.addEventListener('scroll', function(e){ window.scrollTo(0,0); });
     document.body.addEventListener('dragstart', e => e.preventDefault());
@@ -119,6 +122,8 @@
     const gameOverDiv = document.getElementById('game-over');
     const startScreen = document.getElementById('start-screen');
     const mainGame = document.getElementById('main-game');
+    const rightSound = document.getElementById('right-sound');
+    const wrongSound = document.getElementById('wrong-sound');
 
     function getMixedArray(level) {
       let arr = [];
@@ -137,6 +142,31 @@
         }
       }
       return arr;
+    }
+
+    function speakWord(word) {
+      // Use Hindi voice if available, fallback to default
+      try {
+        const synth = window.speechSynthesis;
+        if (!synth) return;
+        const utter = new window.SpeechSynthesisUtterance(word);
+        // Try to select Hindi/Indian voice if possible
+        const voices = synth.getVoices();
+        let hiVoice = voices.find(v => v.lang && (v.lang.startsWith('hi') || v.lang.startsWith('sa-IN') || v.lang.startsWith('en-IN')));
+        if (hiVoice) utter.voice = hiVoice;
+        utter.rate = 0.85;
+        synth.cancel(); // In case previous speech is still running
+        synth.speak(utter);
+      } catch {}
+    }
+
+    function playRightSound() {
+      rightSound.currentTime = 0;
+      rightSound.play();
+    }
+    function playWrongSound() {
+      wrongSound.currentTime = 0;
+      wrongSound.play();
     }
 
     function startGame() {
@@ -164,6 +194,7 @@
         return;
       }
       wordBox.innerText = mixedArray[i].word;
+      speakWord(mixedArray[i].word);
       current = i;
       playing = true;
 
@@ -239,16 +270,16 @@
         let correct = false;
         // Flying things: only Arrow Up/swap up is correct
         if (ans.isFlying && (action === "arrowUp" || action === "swipeUp")) correct = true;
-        // Non-flying things: only Arrow Down/swap down is correct
-        if (!ans.isFlying && (action === "arrowDown" || action === "swipeDown")) correct = true;
-        // For non-flying things: if user does nothing (does not move/switch) that's also OK
-        if (!ans.isFlying && action === "noAction") correct = true;
+        // Non-flying things: only Arrow Down/swap down is correct, or no action (for tradition)
+        if (!ans.isFlying && (action === "arrowDown" || action === "swipeDown" || action === "noAction")) correct = true;
 
         if (correct) {
+          playRightSound();
           score++;
           scoreSpan.innerText = score;
           setTimeout(() => showWord(current + 1), 400);
         } else {
+          playWrongSound();
           gameOverDiv.style.display = "block";
           restartBtn.style.display = "inline-block";
           wordBox.innerText = '';
