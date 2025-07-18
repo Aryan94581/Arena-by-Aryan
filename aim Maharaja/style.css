@@ -169,8 +169,8 @@ body {
     border-radius: 7px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
-.resultBoxRow h2{
-  margin: 5px;
+.resultBoxRow h1{
+  color: #129407;
 }
 .time{
     color: #5cbcf8;
