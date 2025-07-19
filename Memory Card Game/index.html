@@ -513,11 +513,11 @@
         function playSound(type) {
             let audioSrc;
             if (type === "win")
-                audioSrc = "https://cdn.pixabay.com/audio/2022/07/26/audio_124b144c36.mp3"; // win
+                audioSrc = "./game music/win.mp3"; // win
             else if (type === "correct")
-                audioSrc = "https://cdn.pixabay.com/audio/2022/06/15/audio_13c1bfae74.mp3"; // correct
+                audioSrc = "./game music/correct.mp3"; // correct
             else if (type === "wrong")
-                audioSrc = "https://cdn.pixabay.com/audio/2022/07/26/audio_1248c7e58f.mp3"; // wrong
+                audioSrc = "./game music/wrong.mp3"; // wrong
             else return;
             let snd = new Audio(audioSrc);
             snd.volume = 0.18; snd.play();
