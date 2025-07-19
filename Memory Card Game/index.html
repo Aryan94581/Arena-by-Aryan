@@ -1,164 +1,540 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <title>Memory Card Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory card </title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" 
-      rel="stylesheet">
-      <link rel="stylesheet" href="../Main.css">
-      <link href="style.css" rel="stylesheet" >
+    <style>
+        /* BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        :root {
+            --grid-size: 4;
+            --card-size: 95px;
+        }
+
+        .size-4 {
+            --grid-size: 4;
+            --card-size: 95px;
+        }
+
+        .size-6 {
+            --grid-size: 6;
+            --card-size: 61px;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff8000 0%, #129407 100%);
+            flex-direction: column;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
+
+        .controls label {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .controls select {
+            font-size: 1rem;
+            padding: 0.2em 0.6em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .wrapper,
+        .resultBox {
+            width: 100vw;
+            max-width: 100vw;
+            padding: 10px;
+            min-width: 0;
+            min-height: 0;
+            box-sizing: border-box;
+            transition: min-height 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cards {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(var(--grid-size), 1fr);
+            width: 100%;
+            padding-top: 8px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: auto;
+            position: relative;
+            border-radius: 7px;
+            cursor: pointer;
+            background: none;
+            perspective: 800px;
+            transform-style: preserve-3d;
+            flex-shrink: 0;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:active {
+            box-shadow: 0 4px 14px 0px #ff800048;
+        }
+
+        .qm,
+        .front-view span {
+            color: #ff8000;
+            font-size: clamp(1.3rem, 8vw, 2.8rem);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .view {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: #fff;
+            border-radius: 7px;
+            backface-visibility: hidden;
+            transition: transform 0.25s linear;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.09);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .card.shake {
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-11px);
+            }
+
+            40% {
+                transform: translateX(11px);
+            }
+
+            60% {
+                transform: translateX(-7px);
+            }
+
+            80% {
+                transform: translateX(7px);
+            }
+        }
+
+        .front-view span {
+            color: #ff8000;
+            font-size: calc(var(--card-size) * 0.7);
+        }
+
+        .back-view {
+            transform: rotateY(-180deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .back-view img {
+            width: 70%;
+            /* Or try 65-80% for your comfort */
+            max-width: 90px;
+            /* Set max-width according to your card size */
+            max-height: 90%;
+            /* Will never overflow box */
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            margin: 0 auto;
+            user-select: none;
+            pointer-events: none;
+        }
+
+
+        .card.flip .front-view {
+            transform: rotateY(180deg);
+        }
+
+        .card.flip .back-view {
+            transform: rotateY(0);
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        /* Result box stuff */
+        .resultBox {
+            display: none;
+        }
+
+        .resultBox.show {
+            display: flex;
+        }
+
+        .upperSection {
+            width: 100%;
+            gap: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+
+        .headline {
+            color: #ff8000;
+            text-align: center;
+        }
+
+        .resultBoxRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+            padding: 9px 15px;
+            color: #ff8000;
+            background: #fff;
+            border-radius: 7px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .time,
+        .mistakes {
+            color: #5cbcf8;
+        }
+
+        .mistakes {
+            margin-right: 50px;
+        }
+
+        .resultBox button {
+            height: 54px;
+            width: 90%;
+            border-radius: 10px;
+            margin: 10px 20px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #fff;
+            background-color: #ff8000;
+            border: 0px;
+            cursor: pointer;
+        }
+
+        .newGame span {
+            color: #5cbcf8;
+        }
+
+        .back-menu-btn {
+            color: rgb(4, 177, 4);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        /* ==== ALL MEDIA QUERIES AT END, IN ORDER ==== */
+
+        @media (min-width: 600px) {
+
+            .wrapper,
+            .resultBox {
+                width: 600px;
+                min-height: 600px;
+                padding: 20px;
+                max-width: 600px;
+            }
+
+            .size-4 {
+                --grid-size: 4;
+                --card-size: 95px;
+            }
+
+            .size-6 {
+                --grid-size: 6;
+                --card-size: 61px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .wrapper,
+            .resultBox {
+                width: 99vw;
+                min-height: 99vw;
+                padding: 10px 3vw;
+                max-width: 99vw;
+            }
+
+            .size-4 {
+                --grid-size: 4;
+                --card-size: 21vw;
+            }
+
+            .size-6 {
+                --grid-size: 6;
+                --card-size: 14vw;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="wrapper ">
-        <ul class="cards">
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-1.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-2.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-3.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-4.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-5.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-6.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-7.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-8.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-1.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-2.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-3.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-4.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-5.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-6.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-7.png" alt="card-image">
-                </div>
-            </li>
-            <li class="card">
-                <div class="view front-view">
-                    <span class="material-icons">question_mark</span>
-                </div>
-                <div class="view back-view">
-                    <img src="game-image/img-8.png" alt="card-image">
-                </div>
-            </li>
-        </ul>
+
+    <div class="controls">
+        <label for="gridSize">Grid size:</label>
+        <select id="gridSize">
+            <option value="4">4x4</option>
+            <option value="6">6x6</option>
+        </select>
     </div>
-    <div class="resultBox hide">
+
+    <div class="wrapper size-4">
+        <ul class="cards"></ul>
+    </div>
+
+    <div class="resultBox">
         <div class="upperSection">
             <h1 class="headline">You Win! 🥳</h1>
             <div class="resultBoxRow">
                 <h1>Time Taken</h1>
-                <h1 ><span class="time"></span>s</h1>
+                <h1><span class="time">0:00</span>s</h1>
             </div>
             <div class="resultBoxRow">
                 <h1>Mistakes</h1>
-                <h1 class="mistakes"></h1>
+                <h1 class="mistakes">0</h1>
             </div>
         </div>
-        <div class="newGame"> <button>Start <span>New</span> Game</button>
-        <a href="../index.html" class="back-menu-btn" style="color: rgb(4, 177, 4);">⬅️ Play <span>other</span> Games</a></div>
+        <div class="newGame">
+            <button>Start <span>New</span> Game</button>
+            <a href="#" class="back-menu-btn">⬅️ Play <span>other</span> Games</a>
+        </div>
     </div>
-    <script src="index.js"></script>
+
+    <script>
+        // Configuration
+        const POSSIBLE_IMAGES = [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+        ]; // enough for all grid sizes
+
+        // --- DOMs
+        const wrapper = document.querySelector(".wrapper");
+        const cardsList = wrapper.querySelector(".cards");
+        const resultBox = document.querySelector(".resultBox");
+        const gridSizeSelect = document.getElementById("gridSize");
+        const newGameBtn = document.querySelector(".newGame button");
+        const timeField = document.querySelector(".time");
+        const mistakeField = document.querySelector(".mistakes");
+        // --- Game state
+        let cards = [],
+            cardOne = null, cardTwo = null, disableDeck = false,
+            matchCard = 0, mistakes = 0, timer, minutes = 0, seconds = 0, timerStarted = false,
+            totalPairs = 8, // grid==4
+            gridSize = 4;
+
+        // --- UTIL
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- CARD GENERATOR
+        function generateCards(size) {
+            gridSize = size;
+            wrapper.classList.remove("size-4", "size-6");
+            wrapper.classList.add("size-" + size);
+            cardsList.innerHTML = "";
+
+            // --- Responsive: mobile pe columns jyada, rows kam ---
+            let numCols = size, numRows = size;
+            if (size === 6 && window.innerWidth < 500) {
+                numCols = 6; numRows = 6;
+                wrapper.style.height = "";
+            } else {
+                wrapper.style.height = "";
+            }
+
+            document.documentElement.style.setProperty('--grid-size', numCols);
+            cardsList.style.gridTemplateColumns = `repeat(${numCols}, 1fr)`;
+            cardsList.style.gridTemplateRows = `repeat(${numRows}, 1fr)`;
+
+            const numCards = numCols * numRows;
+            totalPairs = Math.floor(numCards / 2);
+
+            // Choose images/pairs as needed
+            let imgIds = POSSIBLE_IMAGES.slice(0, totalPairs);
+            let cardImgs = [...imgIds, ...imgIds];
+            if (cardImgs.length < numCards) cardImgs.push(POSSIBLE_IMAGES[17] + 11);
+            shuffle(cardImgs);
+
+            for (let i = 0; i < numCards; i++) {
+                let imgSrc = `./game-image/img-${cardImgs[i]}.png`;  // <-- Your local folder images
+                cardsList.insertAdjacentHTML("beforeend", `
+                <li class="card">
+                    <div class="view front-view">
+                    <span class="qm">?</span>
+                    </div>
+                    <div class="view back-view">
+                    <img src="${imgSrc}" draggable="false" alt="card-image">
+                    </div>
+                </li>
+                `);
+            }
+
+            cards = [...cardsList.querySelectorAll(".card")];
+        }
+
+        // --- TIMER
+        function startClock() {
+            timerStarted = true;
+            clearInterval(timer);
+            minutes = 0; seconds = 0;
+            timer = setInterval(() => {
+                seconds++; if (seconds === 60) { seconds = 0; minutes++; }
+            }, 1000);
+        }
+        function stopClock() { clearInterval(timer); timerStarted = false; }
+
+        // --- GAME RESET/START
+        function startNewGame(size = gridSize) {
+            matchCard = 0; mistakes = 0; cardOne = cardTwo = null; disableDeck = false;
+            resultBox.classList.remove("show");
+            wrapper.classList.remove("hide");
+            generateCards(size);
+            setCardListeners();
+            stopClock();
+            timerStarted = false;
+            timeField.textContent = "0:00";
+            mistakeField.textContent = "0";
+        }
+
+        // --- CARD CLICK
+        function setCardListeners() {
+            cards = [...cardsList.querySelectorAll(".card")];
+            cards.forEach(card => {
+                card.classList.remove("flip", "shake");
+                card.addEventListener("click", flipCard);
+            });
+        }
+
+        function flipCard(e) {
+            let clickedCard = e.currentTarget;
+            if (!timerStarted) startClock();
+            if (clickedCard !== cardOne && !disableDeck && !clickedCard.classList.contains("flip")) {
+                clickedCard.classList.add("flip");
+                if (!cardOne) {
+                    cardOne = clickedCard;
+                } else {
+                    cardTwo = clickedCard;
+                    disableDeck = true;
+                    let cardOneImg = cardOne.querySelector("img").src,
+                        cardTwoImg = cardTwo.querySelector("img").src;
+                    matchCards(cardOneImg, cardTwoImg);
+                }
+            }
+        }
+
+        function matchCards(img1, img2) {
+            if (img1 === img2) {
+                matchCard++;
+                playSound("correct");
+                cardOne.removeEventListener("click", flipCard);
+                cardTwo.removeEventListener("click", flipCard);
+                cardOne = cardTwo = null;
+                disableDeck = false;
+                if (matchCard === totalPairs) setTimeout(resultPage, 400);
+            } else {
+                mistakes++;
+                mistakeField.textContent = mistakes + "";
+                playSound("wrong");
+                setTimeout(() => {
+                    cardOne.classList.add("shake");
+                    cardTwo.classList.add("shake");
+                }, 400);
+                setTimeout(() => {
+                    cardOne.classList.remove("shake", "flip");
+                    cardTwo.classList.remove("shake", "flip");
+                    cardOne = cardTwo = null;
+                    disableDeck = false;
+                }, 1100);
+            }
+        }
+        function padTime(v) { return v < 10 ? "0" + v : v; }
+        function resultPage() {
+            stopClock();
+            timeField.textContent = `${minutes}:${padTime(seconds)}`;
+            mistakeField.textContent = mistakes + "";
+            wrapper.classList.add("hide");
+            resultBox.classList.add("show");
+            playSound("win");
+        }
+
+        // SOUNDS -- quick demo with short notes. Plug actual assets in URLs as needed.
+        function playSound(type) {
+            let audioSrc;
+            if (type === "win")
+                audioSrc = "https://cdn.pixabay.com/audio/2022/07/26/audio_124b144c36.mp3"; // win
+            else if (type === "correct")
+                audioSrc = "https://cdn.pixabay.com/audio/2022/06/15/audio_13c1bfae74.mp3"; // correct
+            else if (type === "wrong")
+                audioSrc = "https://cdn.pixabay.com/audio/2022/07/26/audio_1248c7e58f.mp3"; // wrong
+            else return;
+            let snd = new Audio(audioSrc);
+            snd.volume = 0.18; snd.play();
+        }
+
+        // --- EVENT: new game
+        newGameBtn.onclick = () => {
+            startNewGame(gridSize);
+        };
+        // --- Grid size change
+        gridSizeSelect.addEventListener("change", e => {
+            let size = parseInt(e.target.value, 10);
+            startNewGame(size);
+        });
+        // Initial game
+        window.onload = () => { startNewGame(4); };
+    </script>
 </body>
+
 </html>
